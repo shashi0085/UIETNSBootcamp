@@ -5,14 +5,23 @@ package com.flipkart.uietnsbootcamp.shashi
   */
 
 import org.apache.spark._
+import org.apache.spark.streaming.twitter.TwitterUtils
+
+
+import com.google.gson.Gson
+import org.apache.spark.streaming.twitter.TwitterUtils
+import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.{SparkConf, SparkContext}
+
+
 object PiThingy {
-  val conf = new SparkConf().setAppName("myApp").setMaster("local[2]")
+  val conf = new SparkConf().setAppName("myApp").setMaster("local")
   val sc = new SparkContext(conf)
   def main(args: Array[String]) = {
-    val file = sc.textFile("/Users/shashi.kushwaha/flipkart/Hello/src/main/scala-2.11/sparkOne/Second.scala ")
-    val words = file.map(line => line.split(" ")).map(word => (word, 1))
+    val file = sc.textFile("/Users/shashi.kushwaha/Second.scala")
+    val words = file.flatMap(line => line.split(" ")).map(word => (word, 1))
     val counts = words.reduceByKey(_+_);
-    counts.foreach(println);
+    counts.saveAsTextFile("/Users/shashi.kushwaha/save")
   }
 
 }
